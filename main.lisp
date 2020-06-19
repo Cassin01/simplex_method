@@ -45,12 +45,12 @@
               new-sts-op
               (compute new-sts-op))))))))
 
-;;;; 制約: op -> 最大化, スラック変数導入済み, すべての変数は0以上
-;;;; Constraint: op -> Maximize, require slack variables, all variables are greater than or equal to 0
+;;;; 制約: op(-z) -> 最大化, スラック変数導入済み, すべての変数は0以上
+;;;; Constraint: op(-z) -> Maximize, require slack variables, all variables are greater than or equal to 0
 (defun main ()
-  (let ((st1 '( 3  3 -5  1 0 7))
-        (st2 '( 7 -3  7  0 1 4))
-        (op  '( 2 -5  4  0 0 0)))
+  (let ((st1 '(  4   3  2  1  0  8))
+        (st2 '( -3  1  -1  0  1  3))
+        (op  '( -8 -5  -6  0  0  0)))
     (let ((sts (list st1 st2)))
       (compute (list sts op)))))
 
