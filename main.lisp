@@ -48,10 +48,10 @@
 ;;;; 制約: op -> 最大化, スラック変数導入済み, すべての変数は0以上
 ;;;; Constraint: op -> Maximize, require slack variables, all variables are greater than or equal to 0
 (defun main ()
-  (let ((st1 '( 1  1  8  4 1 0 9))
-        (st2 '( 4 -3 -2 -3 0 1 8))
-        (op  '(-5 -2 -3 -1 0 0 0)))
+  (let ((st1 '( 3  3 -5  1 0 7))
+        (st2 '( 7 -3  7  0 1 4))
+        (op  '( 2 -5  4  0 0 0)))
     (let ((sts (list st1 st2)))
-      (let ((sts-op (compute (list sts op))))))))
+      (compute (list sts op)))))
 
 (main)
