@@ -51,8 +51,8 @@
     )
   )
 
-;; 制約: op -> 最小化, スラック変数導入済み, すべての変数は0以上
-;; Constraint: op -> Minimize, require stack variables, all variables are greater than or equal to 0
+;; 制約: op -> 最大化, スラック変数導入済み, すべての変数は0以上
+;; Constraint: op -> Maximize, require stack variables, all variables are greater than or equal to 0
 (defun main ()
   (let ((st1 '( 1  1  8 4 1 0 9))
         (st2 '( 4 -3 -2 -3 0 1 8))
