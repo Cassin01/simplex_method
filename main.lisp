@@ -19,7 +19,6 @@
       (incf i)))
   (format t "op:  ~A~%~%" op))
 
-
 (defun show-log2 (sts op index index-row)
   (let ((row 0))
     (dolist (st sts)
@@ -36,7 +35,6 @@
   (dolist (val op)
     (format t "~D " val))
   (format t "~%~%"))
-
 
 (defun compute (sts-op)
   (let* ((op (first (last sts-op)))
