@@ -20,16 +20,41 @@
         (incf i))))
   (format t "op:  ~A~%~%" op))
 
+
+(defun show-log2 (sts op index index-row)
+  (let ((i 0))
+    (dolist (st sts)
+      (format t "st~D: " i)
+      (let ((j 0))
+        (dolist (val st)
+          (if (and (= j index) (= i index-row))
+            (format t "~c[31m~D~c[0m " #\ESC (nth index (nth index-row sts)) #\ESC)
+            (format t "~D " val)
+            )
+          (incf j)
+          )
+        (format t "~%")
+        )
+
+      (incf i)))
+  (format t "op:  ")
+  (dolist (val op)
+    (format t "~D " val)
+    )
+  (format t "~%~%")
+  )
+
+
 (defun compute (sts-op)
   (let ((sts (first (all-but-last sts-op))) (op (first (last sts-op))))
-    (let ((index (min-index op)))
+    (let ((index (min-index (all-but-last op))))
       (let ((index-row
               (min-index (mapcar #'(lambda (xs)
                                      (if (> (nth index xs)  0)
                                        (/ (first (last xs)) (nth index xs))
-                                       1000))
+                                       100000))
                                  sts))))
-        (show-log sts op)
+        (show-log2 sts op index index-row)
         (let ((i 0))
           (let ((new-sts-op (list
                               (mapcar #'(lambda (st) (if (/= index-row i)
@@ -48,10 +73,12 @@
 ;;;; 制約: op(-z) -> 最大化, スラック変数導入済み, すべての変数は0以上
 ;;;; Constraint: op(-z) -> Maximize, require slack variables, all variables are greater than or equal to 0
 (defun main ()
-  (let ((st1 '(  4   3  2  1  0  8))
-        (st2 '( -3  1  -1  0  1  3))
-        (op  '( -8 -5  -6  0  0  0)))
-    (let ((sts (list st1 st2)))
+  (let ((st1 '(  5  5  5  7  7  7 -1  0  0  0  137))
+        (st2 '(  8  0  0  6  0  0  0  1  0  0  6))
+        (st3 '(  0  7  0  0  9  0  0  0  1  0 10))
+        (st4 '(  0  0  6  0  0  7  0  0  0  1  5))
+        (op  '(  3  2  1  7 -1  2  0  0  0  0 -140)))
+    (let ((sts (list st1 st2 st3 st4)))
       (compute (list sts op)))))
 
 (main)
