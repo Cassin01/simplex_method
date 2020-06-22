@@ -15,9 +15,8 @@
 (defun show-log (sts op)
   (let ((i 0))
     (dolist (st sts)
-      (progn
-        (format t "st~D: ~A~%" i st)
-        (incf i))))
+      (format t "st~D: ~A~%" i st)
+      (incf i)))
   (format t "op:  ~A~%~%" op))
 
 
@@ -40,39 +39,38 @@
 
 
 (defun compute (sts-op)
-  (let ((sts (first (all-but-last sts-op))) (op (first (last sts-op))))
-    (let ((index (min-index (all-but-last op))))
-      (let ((index-row
-              (min-index (mapcar #'(lambda (xs)
-                                     (if (> (nth index xs)  0)
-                                       (/ (first (last xs)) (nth index xs))
-                                       100000))
-                                 sts))))
-        (show-log2 sts op index index-row)
-        (let ((i 0))
-          (let ((new-sts-op (list
-                              (mapcar #'(lambda (st) (if (/= index-row i)
-                                                       (progn
-                                                         (incf i)
-                                                         (eliminate (nth index-row sts) st index))
-                                                       (progn
-                                                         (incf i)
-                                                         (mapcar #'(lambda (x) (/ x (nth index st))) st))
-                                                       )) sts)
-                              (eliminate (nth index-row sts) op index))))
-            (if (every #'(lambda (x) (>= x 0)) (all-but-last op))
-              new-sts-op
-              (compute new-sts-op))))))))
+  (let* ((op (first (last sts-op)))
+         (sts (first (all-but-last sts-op)))
+         (index (min-index (all-but-last op)))
+         (index-row (min-index (mapcar #'(lambda (xs)
+                                           (if (> (nth index xs)  0)
+                                             (/ (first (last xs)) (nth index xs))
+                                             100000))
+                                       sts))))
+    (show-log2 sts op index index-row)
+    (let* ((i 0)
+           (new-sts-op (list (mapcar #'(lambda (st) (if (/= index-row i)
+                                                      (progn
+                                                        (incf i)
+                                                        (eliminate (nth index-row sts) st index))
+                                                      (progn
+                                                        (incf i)
+                                                        (mapcar #'(lambda (x) (/ x (nth index st))) st))
+                                                      )) sts)
+                             (eliminate (nth index-row sts) op index))))
+      (if (every #'(lambda (x) (>= x 0)) (all-but-last op))
+        new-sts-op
+        (compute new-sts-op)))))
 
 ;;;; 制約: op(-z) -> 最大化, スラック変数導入済み, すべての変数は0以上
 ;;;; Constraint: op(-z) -> Maximize, require slack variables, all variables are greater than or equal to 0
 (defun main ()
-  (let ((st1 '(  5  5  5  7  7  7 -1  0  0  0  137))
-        (st2 '(  8  0  0  6  0  0  0  1  0  0  6))
-        (st3 '(  0  7  0  0  9  0  0  0  1  0 10))
-        (st4 '(  0  0  6  0  0  7  0  0  0  1  5))
-        (op  '(  3  2  1  7 -1  2  0  0  0  0 -140)))
-    (let ((sts (list st1 st2 st3 st4)))
-      (compute (list sts op)))))
+  (let* ((st1 '(  5  5  5  7  7  7 -1  0  0  0  137))
+         (st2 '(  8  0  0  6  0  0  0  1  0  0  6))
+         (st3 '(  0  7  0  0  9  0  0  0  1  0 10))
+         (st4 '(  0  0  6  0  0  7  0  0  0  1  5))
+         (op  '(  3  2  1  7 -1  2  0  0  0  0 -140))
+         (sts (list st1 st2 st3 st4)))
+    (compute (list sts op))))
 
 (main)
